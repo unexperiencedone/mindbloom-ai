@@ -251,7 +251,7 @@ export default function ChatPage() {
               <Input
                 type="text"
                 value={input}
-                onChange={e => setInput(e.value)}
+                onChange={e => setInput(e.target.value)}
                 placeholder="Share what's on your mind..."
                 className="flex-1"
                 disabled={isLoading}
