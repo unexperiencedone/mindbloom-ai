@@ -12,11 +12,19 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Wind, Smile, BookHeart, FileText, Loader2 } from 'lucide-react';
+import { ArrowLeft, Wind, Smile, BookHeart, FileText, Loader2, User, Flower2 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+
+
+type Message = {
+  role: 'user' | 'model';
+  content: string;
+};
 
 function BreathingExercise() {
   // In a real app, this would be a more interactive component
@@ -112,48 +120,75 @@ function GratitudeList() {
     );
 }
 
-function HistorySummary() {
-    const [summary, setSummary] = useState('');
+function ChatBubble({ message }: { message: Message }) {
+  const isUser = message.role === 'user';
+  return (
+    <div
+      className={cn(
+        'flex items-end gap-3',
+        isUser ? 'justify-end' : 'justify-start'
+      )}
+    >
+      {!isUser && (
+        <Avatar className="h-9 w-9 border bg-secondary/50 text-secondary-foreground">
+          <AvatarFallback className="bg-transparent">
+            <Flower2 className="h-5 w-5" />
+          </AvatarFallback>
+        </Avatar>
+      )}
+      <div
+        className={cn(
+          'max-w-[75%] rounded-lg p-3 text-sm shadow-sm',
+          isUser
+            ? 'bg-primary text-primary-foreground rounded-br-none'
+            : 'bg-card text-card-foreground rounded-bl-none'
+        )}
+      >
+        <p className="whitespace-pre-wrap">{message.content}</p>
+      </div>
+      {isUser && (
+        <Avatar className="h-9 w-9 border">
+          <AvatarFallback>
+            <User className="h-5 w-5" />
+          </AvatarFallback>
+        </Avatar>
+      )}
+    </div>
+  );
+}
+
+function ConversationHistory() {
+    const [history, setHistory] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const { toast } = useToast();
 
-    const handleGenerateSummary = async () => {
+    const handleFetchHistory = async () => {
         setIsLoading(true);
-        setSummary('');
+        setHistory([]);
         try {
-            const response = await fetch('/api/user/summarize-history');
+            const response = await fetch('/api/user/chat-history');
             const data = await response.json();
             
             if (!response.ok) {
-                // Use the error message from the API if available
-                throw new Error(data.error || 'Failed to generate summary.');
+                throw new Error(data.error || 'Failed to fetch history.');
             }
             
-            // Handle the case where there's no history to summarize
-            if (data.summary.startsWith("You don't have any chat history yet")) {
+            if (!data.messages || data.messages.length === 0) {
                  toast({
                     title: 'No History Found',
                     description: "Start a conversation with Bloom to build your history!",
                 });
             } else {
-                setSummary(data.summary);
+                setHistory(data.messages);
             }
 
         } catch (error: any) {
-            console.error('Error generating summary:', error);
-            // Check for the specific "no history" message to avoid showing a generic error
-            if (error.message.includes("You don't have any chat history yet")) {
-                 toast({
-                    title: 'No History Found',
-                    description: "Start a conversation with Bloom to build your history!",
-                });
-            } else {
-                toast({
-                    variant: 'destructive',
-                    title: 'Error',
-                    description: error.message || 'Could not generate your history summary. Please try again.',
-                });
-            }
+            console.error('Error fetching history:', error);
+            toast({
+                variant: 'destructive',
+                title: 'Error',
+                description: error.message || 'Could not fetch your history. Please try again.',
+            });
         } finally {
             setIsLoading(false);
         }
@@ -163,30 +198,32 @@ function HistorySummary() {
         <Card>
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                    <FileText /> History Summary
+                    <FileText /> Conversation History
                 </CardTitle>
                 <CardDescription>
-                    Get an AI-powered summary of your conversation history to reflect on your journey.
+                    Review your past conversations with Bloom to reflect on your journey.
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                <Button onClick={handleGenerateSummary} disabled={isLoading}>
+                <Button onClick={handleFetchHistory} disabled={isLoading}>
                     {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    {isLoading ? 'Analyzing Your History...' : 'Generate My Summary'}
+                    {isLoading ? 'Fetching History...' : 'Fetch My History'}
                 </Button>
 
                 {isLoading && (
                    <div className="space-y-2">
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-10 w-full" />
+                        <Skeleton className="h-10 w-3/4" />
                    </div>
                 )}
                 
-                {summary && (
-                    <div className="p-4 border rounded-lg bg-secondary/30">
-                        <h4 className="font-semibold mb-2">Your Reflection:</h4>
-                        <p className="text-sm whitespace-pre-wrap">{summary}</p>
+                {history.length > 0 && (
+                    <div className="p-4 border rounded-lg bg-secondary/30 space-y-4 max-h-96 overflow-y-auto">
+                        <h4 className="font-semibold mb-2">Your Conversation Log:</h4>
+                        {history.map((message, index) => (
+                           <ChatBubble key={index} message={message} />
+                        ))}
                     </div>
                 )}
             </CardContent>
@@ -216,7 +253,7 @@ export default function ActivitiesPage() {
               <TabsTrigger value="breathing">Breathing</TabsTrigger>
               <TabsTrigger value="journal">Journal</TabsTrigger>
               <TabsTrigger value="gratitude">Gratitude</TabsTrigger>
-              <TabsTrigger value="summary">Summary</TabsTrigger>
+              <TabsTrigger value="history">History</TabsTrigger>
             </TabsList>
             <TabsContent value="breathing">
               <BreathingExercise />
@@ -227,8 +264,8 @@ export default function ActivitiesPage() {
             <TabsContent value="gratitude">
                 <GratitudeList />
             </TabsContent>
-            <TabsContent value="summary">
-                <HistorySummary />
+            <TabsContent value="history">
+                <ConversationHistory />
             </TabsContent>
           </Tabs>
         </div>
