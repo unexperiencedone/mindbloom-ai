@@ -13,7 +13,7 @@ export default function ThankYouPage() {
       <p className="max-w-md text-lg text-muted-foreground mb-6">
         Your confirmation has been received. Thank you for taking the time to check in.
       </p>
-      <Link href="/" passHref>
+      <Link href="/chat" passHref>
         <Button>Return to MindBloom AI</Button>
       </Link>
     </div>

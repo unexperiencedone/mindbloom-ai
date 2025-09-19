@@ -118,7 +118,7 @@ export default function SettingsPage() {
   return (
     <div className="flex flex-col h-screen">
       <header className="flex items-center justify-between p-4 border-b shadow-sm">
-        <Button variant="ghost" size="icon" onClick={() => router.push('/')}>
+        <Button variant="ghost" size="icon" onClick={() => router.push('/chat')}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <h1 className="text-2xl font-bold tracking-tight font-headline">
