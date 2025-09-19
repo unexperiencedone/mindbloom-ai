@@ -1,4 +1,5 @@
 // src/lib/firebase-admin.ts
+import 'dotenv/config';
 import * as admin from 'firebase-admin';
 
 const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
