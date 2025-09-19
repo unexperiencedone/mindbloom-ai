@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { Flower2, Send, User } from 'lucide-react';
+import { Flower2, Send, User, Settings } from 'lucide-react';
 import { CrisisAlert } from '@/components/crisis-alert';
 import { chat } from '@/ai/flows/chat';
 import { detectCrisisKeywords } from '@/ai/flows/detect-crisis-keywords';
@@ -14,6 +15,16 @@ type Message = {
   role: 'user' | 'model';
   content: string;
 };
+
+// Simple fetcher to update last active timestamp
+const updateUserActivity = async () => {
+  try {
+    await fetch('/api/user/update-activity', { method: 'POST' });
+  } catch (error) {
+    console.error('Failed to update user activity:', error);
+  }
+};
+
 
 function ChatBubble({ message }: { message: Message }) {
   const isUser = message.role === 'user';
@@ -87,10 +98,18 @@ export default function Home() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+  
+  // Update activity on mount
+  useEffect(() => {
+    updateUserActivity();
+  }, [])
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
+    
+    // Update activity on new message
+    updateUserActivity();
 
     const userMessage: Message = { role: 'user', content: input };
     const newMessages = [...messages, userMessage];
@@ -137,10 +156,16 @@ export default function Home() {
   return (
     <>
       <div className="flex flex-col h-screen">
-        <header className="flex items-center justify-center p-4 border-b shadow-sm">
-          <h1 className="text-2xl font-bold tracking-tight font-headline">
+        <header className="flex items-center justify-between p-4 border-b shadow-sm">
+          <div className="w-10"></div>
+          <h1 className="text-2xl font-bold tracking-tight font-headline text-center">
             MindBloom AI 🌸
           </h1>
+          <Link href="/settings" passHref>
+            <Button variant="ghost" size="icon" aria-label="Settings">
+              <Settings className="h-5 w-5" />
+            </Button>
+          </Link>
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
