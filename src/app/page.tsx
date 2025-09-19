@@ -14,18 +14,29 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Form, FormField, FormItem, FormMessage, FormControl } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Flower2, MessageSquareHeart } from 'lucide-react';
+import { Flower2, MessageSquareHeart, Eye, EyeOff } from 'lucide-react';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address.'),
   password: z.string().min(1, 'Password is required.'),
 });
 
-const signupSchema = z.object({
-  name: z.string().min(1, 'Name is required.'),
-  email: z.string().email('Invalid email address.'),
-  password: z.string().min(6, 'Password must be at least 6 characters.'),
-});
+const signupSchema = z
+  .object({
+    name: z.string().min(1, 'Name is required.'),
+    email: z.string().email('Invalid email address.'),
+    password: z
+      .string()
+      .min(8, 'Password must be at least 8 characters.')
+      .regex(/[A-Z]/, 'Password must contain at least one uppercase letter.')
+      .regex(/[a-z]/, 'Password must contain at least one lowercase letter.')
+      .regex(/[0-9]/, 'Password must contain at least one number.'),
+    confirmPassword: z.string(),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: "Passwords don't match.",
+    path: ['confirmPassword'],
+  });
 
 type LoginForm = z.infer<typeof loginSchema>;
 type SignupForm = z.infer<typeof signupSchema>;
@@ -34,6 +45,9 @@ function AuthForm() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const loginForm = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -42,7 +56,7 @@ function AuthForm() {
 
   const signupForm = useForm<SignupForm>({
     resolver: zodResolver(signupSchema),
-    defaultValues: { name: '', email: '', password: '' },
+    defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
   });
 
   const onLogin = async (data: LoginForm) => {
@@ -114,9 +128,20 @@ function AuthForm() {
                   render={({ field }) => (
                     <FormItem>
                       <Label>Password</Label>
-                      <FormControl>
-                        <Input type="password" placeholder="password123" {...field} disabled={isLoading} />
-                      </FormControl>
+                      <div className="relative">
+                        <FormControl>
+                          <Input type={showLoginPassword ? 'text' : 'password'} placeholder="password123" {...field} disabled={isLoading} />
+                        </FormControl>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute inset-y-0 right-0 h-full px-3 text-muted-foreground"
+                            onClick={() => setShowLoginPassword(prev => !prev)}
+                        >
+                            {showLoginPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </Button>
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -167,11 +192,46 @@ function AuthForm() {
                   control={signupForm.control}
                   name="password"
                   render={({ field }) => (
-                    <FormItem>
+                     <FormItem>
                       <Label>Password</Label>
-                      <FormControl>
-                        <Input type="password" {...field} disabled={isLoading} />
-                      </FormControl>
+                       <div className="relative">
+                        <FormControl>
+                          <Input type={showSignupPassword ? 'text' : 'password'} {...field} disabled={isLoading} />
+                        </FormControl>
+                         <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute inset-y-0 right-0 h-full px-3 text-muted-foreground"
+                            onClick={() => setShowSignupPassword(prev => !prev)}
+                        >
+                            {showSignupPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </Button>
+                       </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={signupForm.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                     <FormItem>
+                      <Label>Confirm Password</Label>
+                       <div className="relative">
+                        <FormControl>
+                          <Input type={showConfirmPassword ? 'text' : 'password'} {...field} disabled={isLoading} />
+                        </FormControl>
+                         <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute inset-y-0 right-0 h-full px-3 text-muted-foreground"
+                            onClick={() => setShowConfirmPassword(prev => !prev)}
+                        >
+                            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </Button>
+                       </div>
                       <FormMessage />
                     </FormItem>
                   )}
