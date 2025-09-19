@@ -191,9 +191,9 @@ function AuthForm() {
 
 export default function LandingPage() {
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen w-full bg-background overflow-hidden p-4">
+    <div className="relative flex flex-col min-h-screen w-full overflow-hidden p-4">
         
-        <div className="absolute inset-0 bg-background/50 backdrop-blur-sm z-0"></div>
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-0"></div>
 
         {/* Background animations */}
         <motion.div
@@ -204,7 +204,7 @@ export default function LandingPage() {
             <MessageSquareHeart size={60} strokeWidth={1} />
         </motion.div>
         <motion.div
-            className="absolute bottom-20 right-20 text-primary/50"
+            className="absolute bottom-20 right-20 text-primary/30"
             animate={{ y: [0, -20, 0], x: [0, 10, 0] }}
             transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
         >
@@ -218,32 +218,34 @@ export default function LandingPage() {
             <MessageSquareHeart size={40} strokeWidth={1.5} />
         </motion.div>
         
-        <main className="z-10 flex flex-col items-center justify-center w-full">
-            <motion.div
-                initial={{ opacity: 0, y: -100, scale: 0.8 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.8, ease: 'easeOut' }}
-                className="text-center"
-            >
-                <div className="flex justify-center items-center gap-4 mb-4">
-                    <Flower2 className="h-12 w-12 text-primary" />
-                    <h1 className="text-5xl md:text-6xl font-bold tracking-tight font-headline">
-                        MindBloom AI
-                    </h1>
-                </div>
-                <p className="max-w-xl mx-auto text-lg text-muted-foreground mb-8">
-                    Your safe space for reflection and growth. An empathetic AI companion, here to listen without judgment.
-                </p>
-            </motion.div>
+        <main className="z-10 flex flex-1 flex-col items-center justify-center w-full">
+            <div className="w-full max-w-md">
+                <motion.div
+                    initial={{ opacity: 0, y: -50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, ease: 'easeOut' }}
+                    className="text-center"
+                >
+                    <div className="flex justify-center items-center gap-4 mb-4">
+                        <Flower2 className="h-12 w-12 text-primary" />
+                        <h1 className="text-5xl md:text-6xl font-bold tracking-tight font-headline">
+                            MindBloom AI
+                        </h1>
+                    </div>
+                    <p className="max-w-xl mx-auto text-lg text-muted-foreground mb-8">
+                        Your safe space for reflection and growth. An empathetic AI companion, here to listen without judgment.
+                    </p>
+                </motion.div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 100 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
-                className="w-full"
-            >
-                <AuthForm />
-            </motion.div>
+                <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.2, ease: 'easeOut' }}
+                    className="w-full"
+                >
+                    <AuthForm />
+                </motion.div>
+            </div>
         </main>
     </div>
   );
