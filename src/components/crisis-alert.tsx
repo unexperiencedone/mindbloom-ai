@@ -37,17 +37,17 @@ export function CrisisAlert({ open, onOpenChange }: CrisisAlertProps) {
                 <li className="font-medium">
                   <strong>iCALL Psychosocial Helpline:</strong>
                   <br />
-                  <a href="tel:9152987821" className="text-primary-foreground underline">9152987821</a>
+                  <a href="tel:9152987821" className="text-primary underline">9152987821</a>
                 </li>
                 <li className="font-medium">
                   <strong>Vandrevala Foundation:</strong>
                   <br />
-                  <a href="tel:9999666555" className="text-primary-foreground underline">9999666555</a>
+                  <a href="tel:9999666555" className="text-primary underline">9999666555</a>
                 </li>
                 <li className="font-medium">
                   <strong>AASRA (24x7 Helpline):</strong>
                   <br />
-                  <a href="tel:+919820466726" className="text-primary-foreground underline">+91-9820466726</a>
+                  <a href="tel:+919820466726" className="text-primary underline">+91-9820466726</a>
                 </li>
               </ul>
               <p>
