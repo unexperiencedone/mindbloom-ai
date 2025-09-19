@@ -14,7 +14,8 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Form, FormField, FormItem, FormMessage, FormControl } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Flower2, MessageSquareHeart, Eye, EyeOff } from 'lucide-react';
+import { Flower2, MessageSquareHeart, Eye, EyeOff, Info } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address.'),
@@ -338,6 +339,31 @@ export default function LandingPage() {
                     className="w-full"
                 >
                     <AuthForm />
+                </motion.div>
+                
+                <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.4, ease: 'easeOut' }}
+                    className="w-full mt-6"
+                >
+                    <Card className="bg-secondary/50 border-dashed">
+                        <CardHeader className="pb-4">
+                            <CardTitle className="flex items-center gap-2 text-base">
+                                <Info size={20} />
+                                Demo Credentials
+                            </CardTitle>
+                             <CardDescription>
+                                Use these credentials to log in and explore the app.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="text-sm">
+                            <div className="space-y-1">
+                                <p><strong>Email:</strong> <code className="bg-primary/10 text-primary font-semibold px-2 py-1 rounded-md">demo@mindbloom.ai</code></p>
+                                <p><strong>Password:</strong> <code className="bg-primary/10 text-primary font-semibold px-2 py-1 rounded-md">Password123</code></p>
+                            </div>
+                        </CardContent>
+                    </Card>
                 </motion.div>
             </div>
         </main>
