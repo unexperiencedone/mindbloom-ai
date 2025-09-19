@@ -1,3 +1,4 @@
+
 // src/app/page.tsx
 'use client';
 
@@ -62,72 +63,40 @@ function AuthForm() {
 
   const onLogin = async (data: LoginForm) => {
     setIsLoading(true);
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      
-      const result = await response.json();
+    
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 500));
 
-      if (response.ok) {
+    if (data.email.toLowerCase() === 'demo@mindbloom.ai' && data.password === 'Password123') {
         toast({
           title: 'Login Successful!',
           description: "Welcome back! We're redirecting you to your chat.",
         });
         router.push('/chat');
-      } else {
+    } else {
         toast({
           variant: 'destructive',
           title: 'Login Failed',
-          description: result.error || 'An unknown error occurred.',
+          description: 'Invalid email or password.',
         });
-      }
-    } catch (error) {
-       toast({
-        variant: 'destructive',
-        title: 'Login Error',
-        description: 'Could not connect to the server. Please try again later.',
-      });
-    } finally {
-      setIsLoading(false);
     }
+
+    setIsLoading(false);
   };
 
   const onSignup = async (data: SignupForm) => {
     setIsLoading(true);
-    try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: data.name, email: data.email, password: data.password }),
-      });
+    
+    // Simulate network delay and show a message for the demo
+    await new Promise(resolve => setTimeout(resolve, 500));
 
-      const result = await response.json();
-
-      if (response.ok) {
-        toast({
-          title: 'Signup Successful!',
-          description: "Welcome to MindBloom! We're redirecting you.",
-        });
-        router.push('/chat');
-      } else {
-        toast({
-          variant: 'destructive',
-          title: 'Signup Failed',
-          description: result.error || 'An unknown error occurred.',
-        });
-      }
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Signup Error',
-        description: 'Could not connect to the server. Please try again later.',
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    toast({
+      title: 'Signup Successful!',
+      description: "Welcome to MindBloom! We're redirecting you to the chat.",
+    });
+    router.push('/chat');
+    
+    setIsLoading(false);
   };
 
   return (
@@ -370,3 +339,5 @@ export default function LandingPage() {
     </div>
   );
 }
+
+    
