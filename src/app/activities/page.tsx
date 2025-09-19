@@ -151,7 +151,7 @@ function HistorySummary() {
                 toast({
                     variant: 'destructive',
                     title: 'Error',
-                    description: 'Could not generate your history summary. Please try again.',
+                    description: error.message || 'Could not generate your history summary. Please try again.',
                 });
             }
         } finally {
