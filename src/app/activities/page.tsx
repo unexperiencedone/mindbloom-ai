@@ -12,10 +12,11 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Wind, Smile, BookHeart } from 'lucide-react';
+import { ArrowLeft, Wind, Smile, BookHeart, FileText, Loader2 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 function BreathingExercise() {
   // In a real app, this would be a more interactive component
@@ -111,6 +112,67 @@ function GratitudeList() {
     );
 }
 
+function HistorySummary() {
+    const [summary, setSummary] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const { toast } = useToast();
+
+    const handleGenerateSummary = async () => {
+        setIsLoading(true);
+        setSummary('');
+        try {
+            const response = await fetch('/api/user/summarize-history');
+            if (!response.ok) {
+                throw new Error('Failed to generate summary.');
+            }
+            const data = await response.json();
+            setSummary(data.summary);
+        } catch (error) {
+            console.error('Error generating summary:', error);
+            toast({
+                variant: 'destructive',
+                title: 'Error',
+                description: 'Could not generate your history summary. Please try again.',
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                    <FileText /> History Summary
+                </CardTitle>
+                <CardDescription>
+                    Get an AI-powered summary of your conversation history to reflect on your journey.
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <Button onClick={handleGenerateSummary} disabled={isLoading}>
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {isLoading ? 'Analyzing Your History...' : 'Generate My Summary'}
+                </Button>
+
+                {isLoading && (
+                   <div className="space-y-2">
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-3/4" />
+                   </div>
+                )}
+                
+                {summary && (
+                    <div className="p-4 border rounded-lg bg-secondary/30">
+                        <h4 className="font-semibold mb-2">Your Reflection:</h4>
+                        <p className="text-sm whitespace-pre-wrap">{summary}</p>
+                    </div>
+                )}
+            </CardContent>
+        </Card>
+    );
+}
 
 export default function ActivitiesPage() {
   const router = useRouter();
@@ -130,10 +192,11 @@ export default function ActivitiesPage() {
       <main className="flex-1 overflow-y-auto p-4 md:p-6">
         <div className="max-w-2xl mx-auto">
           <Tabs defaultValue="breathing">
-            <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsList className="grid w-full grid-cols-4 mb-6">
               <TabsTrigger value="breathing">Breathing</TabsTrigger>
               <TabsTrigger value="journal">Journal</TabsTrigger>
               <TabsTrigger value="gratitude">Gratitude</TabsTrigger>
+              <TabsTrigger value="summary">Summary</TabsTrigger>
             </TabsList>
             <TabsContent value="breathing">
               <BreathingExercise />
@@ -143,6 +206,9 @@ export default function ActivitiesPage() {
             </TabsContent>
             <TabsContent value="gratitude">
                 <GratitudeList />
+            </TabsContent>
+            <TabsContent value="summary">
+                <HistorySummary />
             </TabsContent>
           </Tabs>
         </div>
