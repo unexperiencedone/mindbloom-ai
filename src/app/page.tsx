@@ -233,7 +233,7 @@ export default function LandingPage() {
                         </h1>
                     </div>
                     <p className="max-w-xl mx-auto text-lg text-muted-foreground mb-8">
-                        Your safe space for reflection and growth. An empathetic AI companion, here to listen without judgment.
+                        Your space for reflection and growth. An empathetic AI companion, here to listen.
                     </p>
                 </motion.div>
 
