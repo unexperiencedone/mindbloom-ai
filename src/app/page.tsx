@@ -61,38 +61,72 @@ function AuthForm() {
 
   const onLogin = async (data: LoginForm) => {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    if (data.email === 'user@example.com' && data.password === 'password123') {
-      toast({
-        title: 'Login Successful!',
-        description: "Welcome back! We're redirecting you to your chat.",
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
       });
-      router.push('/chat');
-    } else {
+      
+      const result = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: 'Login Successful!',
+          description: "Welcome back! We're redirecting you to your chat.",
+        });
+        router.push('/chat');
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Login Failed',
+          description: result.error || 'An unknown error occurred.',
+        });
+      }
+    } catch (error) {
        toast({
         variant: 'destructive',
-        title: 'Login Failed',
-        description: "Invalid email or password. Please try again.",
+        title: 'Login Error',
+        description: 'Could not connect to the server. Please try again later.',
       });
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   const onSignup = async (data: SignupForm) => {
     setIsLoading(true);
-    // In a real app, you would call your auth API here.
-    // We'll simulate a successful signup for the prototype.
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log('Signup data:', data);
-    toast({
-      title: 'Signup Successful!',
-      description: "Welcome to MindBloom! We're redirecting you.",
-    });
-    router.push('/chat');
-    setIsLoading(false);
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: data.name, email: data.email, password: data.password }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: 'Signup Successful!',
+          description: "Welcome to MindBloom! We're redirecting you.",
+        });
+        router.push('/chat');
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Signup Failed',
+          description: result.error || 'An unknown error occurred.',
+        });
+      }
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Signup Error',
+        description: 'Could not connect to the server. Please try again later.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -130,7 +164,7 @@ function AuthForm() {
                       <Label>Password</Label>
                       <div className="relative">
                         <FormControl>
-                          <Input type={showLoginPassword ? 'text' : 'password'} placeholder="password123" {...field} disabled={isLoading} />
+                          <Input type={showLoginPassword ? 'text' : 'password'} placeholder="Your password" {...field} disabled={isLoading} />
                         </FormControl>
                         <Button
                             type="button"
