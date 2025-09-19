@@ -14,9 +14,7 @@ const chatFlow = ai.defineFlow(
     outputSchema: ChatOutputSchema,
   },
   async ({ history, prompt }) => {
-    const model = ai.getModel();
-
-    const result = await model.generate({
+    const result = await ai.generate({
       system: `You are Bloom, a supportive and empathetic AI companion from MindBloom AI.
 Your purpose is to provide a safe and non-judgmental space for users to express their feelings.
 You are not a therapist, but a friendly and caring listener.
