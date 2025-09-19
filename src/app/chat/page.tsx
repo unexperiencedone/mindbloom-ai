@@ -18,6 +18,16 @@ type Message = {
   content: string;
 };
 
+const CHAT_HISTORY_KEY = 'mindbloom-chat-history';
+
+const initialMessages: Message[] = [
+  {
+    role: 'model',
+    content:
+      "Hello! I'm Bloom. 🌸 How are you feeling today? Feel free to share whatever is on your mind.",
+  },
+];
+
 // Simple fetcher to update last active timestamp
 const updateUserActivity = async () => {
   try {
@@ -86,17 +96,38 @@ function TypingIndicator() {
 
 export default function ChatPage() {
   const router = useRouter();
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: 'model',
-      content:
-        "Hello! I'm Bloom. 🌸 How are you feeling today? Feel free to share whatever is on your mind.",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showCrisisAlert, setShowCrisisAlert] = useState(false);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  
+  // Load chat history from local storage on initial render
+  useEffect(() => {
+    try {
+      const savedHistory = localStorage.getItem(CHAT_HISTORY_KEY);
+      if (savedHistory) {
+        setMessages(JSON.parse(savedHistory));
+      } else {
+        setMessages(initialMessages);
+      }
+    } catch (error) {
+      console.error('Failed to load chat history from local storage', error);
+      setMessages(initialMessages);
+    }
+  }, []);
+
+  // Save chat history to local storage whenever it changes
+  useEffect(() => {
+     if (messages.length > 0) {
+        try {
+            localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(messages));
+        } catch (error) {
+            console.error('Failed to save chat history to local storage', error);
+        }
+     }
+  }, [messages]);
+
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
