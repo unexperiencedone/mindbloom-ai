@@ -18,8 +18,6 @@ type Message = {
   content: string;
 };
 
-const CHAT_HISTORY_KEY = 'mindbloom-chat-history';
-
 const initialMessages: Message[] = [
   {
     role: 'model',
@@ -98,35 +96,52 @@ export default function ChatPage() {
   const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Start with loading true
   const [showCrisisAlert, setShowCrisisAlert] = useState(false);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   
-  // Load chat history from local storage on initial render
+  // Load chat history from database on initial render
   useEffect(() => {
-    try {
-      const savedHistory = localStorage.getItem(CHAT_HISTORY_KEY);
-      if (savedHistory) {
-        setMessages(JSON.parse(savedHistory));
-      } else {
+    const fetchHistory = async () => {
+      try {
+        const response = await fetch('/api/user/chat-history');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.messages && data.messages.length > 0) {
+            setMessages(data.messages);
+          } else {
+            setMessages(initialMessages);
+          }
+        } else {
+          setMessages(initialMessages);
+        }
+      } catch (error) {
+        console.error('Failed to load chat history from database', error);
         setMessages(initialMessages);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error('Failed to load chat history from local storage', error);
-      setMessages(initialMessages);
-    }
+    };
+    fetchHistory();
   }, []);
 
-  // Save chat history to local storage whenever it changes
+  // Save chat history to database whenever it changes
   useEffect(() => {
-     if (messages.length > 0) {
-        try {
-            localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(messages));
-        } catch (error) {
-            console.error('Failed to save chat history to local storage', error);
-        }
+     if (messages.length > 0 && !isLoading) { // Don't save initial state
+        const saveHistory = async () => {
+          try {
+              await fetch('/api/user/chat-history', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ messages }),
+              });
+          } catch (error) {
+              console.error('Failed to save chat history to database', error);
+          }
+        };
+        saveHistory();
      }
-  }, [messages]);
+  }, [messages, isLoading]);
 
 
   useEffect(() => {
@@ -139,8 +154,6 @@ export default function ChatPage() {
   }, [])
 
   const handleLogout = () => {
-    // In a real app, this would also clear any auth tokens.
-    // For this prototype, we'll just redirect to the home page.
     router.push('/');
   };
 
@@ -148,7 +161,6 @@ export default function ChatPage() {
     e.preventDefault();
     if (!input.trim()) return;
     
-    // Update activity on new message
     updateUserActivity();
 
     const userMessage: Message = { role: 'user', content: input };
@@ -219,10 +231,16 @@ export default function ChatPage() {
 
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
           <div className="space-y-6 max-w-3xl mx-auto">
-            {messages.map((message, index) => (
-              <ChatBubble key={index} message={message} />
-            ))}
-            {isLoading && <TypingIndicator />}
+            {messages.length === 0 && isLoading ? (
+              <div className="flex justify-center items-center h-full">
+                <p>Loading conversation...</p>
+              </div>
+            ) : (
+              messages.map((message, index) => (
+                <ChatBubble key={index} message={message} />
+              ))
+            )}
+            {messages.length > 0 && isLoading && <TypingIndicator />}
             <div ref={messagesEndRef} />
           </div>
         </main>
@@ -233,7 +251,7 @@ export default function ChatPage() {
               <Input
                 type="text"
                 value={input}
-                onChange={e => setInput(e.target.value)}
+                onChange={e => setInput(e.value)}
                 placeholder="Share what's on your mind..."
                 className="flex-1"
                 disabled={isLoading}
