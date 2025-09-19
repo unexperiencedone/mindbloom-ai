@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,8 +20,14 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from '@/components/ui/form';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Trash2 } from 'lucide-react';
+import { ArrowLeft, Trash2, Moon, Sun, Monitor } from 'lucide-react';
 
 const trustedContactSchema = z.object({
   contactName: z.string().min(1, 'Name is required.'),
@@ -38,6 +45,36 @@ const formSchema = z.object({
 });
 
 type UserProfileForm = z.infer<typeof formSchema>;
+
+function ThemeSwitcher() {
+  const { setTheme } = useTheme();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">
+          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => setTheme('light')}>
+          <Sun className="mr-2 h-4 w-4" />
+          Light
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('dark')}>
+          <Moon className="mr-2 h-4 w-4" />
+          Dark
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('system')}>
+          <Monitor className="mr-2 h-4 w-4" />
+          System
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -116,19 +153,34 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      <header className="flex items-center justify-between p-4 border-b shadow-sm">
+    <div className="flex flex-col min-h-screen">
+      <header className="flex items-center justify-between p-4 border-b shadow-sm bg-card">
         <Button variant="ghost" size="icon" onClick={() => router.push('/chat')}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <h1 className="text-2xl font-bold tracking-tight font-headline">
-          Safety Net Settings
+          Settings
         </h1>
         <div className="w-10"></div>
       </header>
 
-      <main className="flex-1 overflow-y-auto p-4 md:p-6">
-        <div className="max-w-2xl mx-auto">
+      <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-background">
+        <div className="max-w-2xl mx-auto space-y-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Appearance</CardTitle>
+              <CardDescription>
+                Customize the look and feel of the application.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <Label>Theme</Label>
+                <ThemeSwitcher />
+              </div>
+            </CardContent>
+          </Card>
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <Card>
