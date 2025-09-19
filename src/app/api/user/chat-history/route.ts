@@ -28,7 +28,7 @@ export async function GET() {
     return NextResponse.json(data);
   } catch (error: any) {
     console.error('Error fetching chat history:', error);
-    return new NextResponse('Internal Server Error', { status: 500, statusText: error.message });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -58,6 +58,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, message: 'Chat history updated.' });
   } catch (error: any) {
     console.error('Error updating chat history:', error);
-    return new NextResponse('Internal Server Error', { status: 500, statusText: error.message });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
