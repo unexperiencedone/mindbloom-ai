@@ -19,7 +19,7 @@ export async function GET() {
     
     const data = doc.data();
     if (!data || !data.messages || data.messages.length === 0) {
-      return NextResponse.json({ summary: "Your chat history is empty. Start a conversation with Bloom to build your history!" });
+      return NextResponse.json({ summary: "You don't have any chat history yet. Start a conversation with Bloom to build your history!" });
     }
 
     // Format the conversation for the summarizer

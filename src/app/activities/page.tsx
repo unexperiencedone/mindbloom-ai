@@ -122,18 +122,38 @@ function HistorySummary() {
         setSummary('');
         try {
             const response = await fetch('/api/user/summarize-history');
-            if (!response.ok) {
-                throw new Error('Failed to generate summary.');
-            }
             const data = await response.json();
-            setSummary(data.summary);
-        } catch (error) {
+            
+            if (!response.ok) {
+                // Use the error message from the API if available
+                throw new Error(data.error || 'Failed to generate summary.');
+            }
+            
+            // Handle the case where there's no history to summarize
+            if (data.summary.startsWith("You don't have any chat history yet")) {
+                 toast({
+                    title: 'No History Found',
+                    description: "Start a conversation with Bloom to build your history!",
+                });
+            } else {
+                setSummary(data.summary);
+            }
+
+        } catch (error: any) {
             console.error('Error generating summary:', error);
-            toast({
-                variant: 'destructive',
-                title: 'Error',
-                description: 'Could not generate your history summary. Please try again.',
-            });
+            // Check for the specific "no history" message to avoid showing a generic error
+            if (error.message.includes("You don't have any chat history yet")) {
+                 toast({
+                    title: 'No History Found',
+                    description: "Start a conversation with Bloom to build your history!",
+                });
+            } else {
+                toast({
+                    variant: 'destructive',
+                    title: 'Error',
+                    description: 'Could not generate your history summary. Please try again.',
+                });
+            }
         } finally {
             setIsLoading(false);
         }
