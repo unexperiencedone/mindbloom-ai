@@ -3,11 +3,12 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { Flower2, Send, User, Settings, BrainCircuit } from 'lucide-react';
+import { Flower2, Send, User, Settings, BrainCircuit, LogOut } from 'lucide-react';
 import { CrisisAlert } from '@/components/crisis-alert';
 import { chat } from '@/ai/flows/chat';
 import { detectCrisisKeywords } from '@/ai/flows/detect-crisis-keywords';
@@ -84,6 +85,7 @@ function TypingIndicator() {
 }
 
 export default function ChatPage() {
+  const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'model',
@@ -104,6 +106,12 @@ export default function ChatPage() {
   useEffect(() => {
     updateUserActivity();
   }, [])
+
+  const handleLogout = () => {
+    // In a real app, this would also clear any auth tokens.
+    // For this prototype, we'll just redirect to the home page.
+    router.push('/');
+  };
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -166,11 +174,16 @@ export default function ChatPage() {
           <h1 className="text-2xl font-bold tracking-tight font-headline text-center">
             MindBloom AI 🌸
           </h1>
-          <Link href="/settings" passHref>
-            <Button variant="ghost" size="icon" aria-label="Settings">
-              <Settings className="h-5 w-5" />
+          <div className="flex items-center gap-2">
+            <Link href="/settings" passHref>
+              <Button variant="ghost" size="icon" aria-label="Settings">
+                <Settings className="h-5 w-5" />
+              </Button>
+            </Link>
+             <Button variant="ghost" size="icon" aria-label="Logout" onClick={handleLogout}>
+              <LogOut className="h-5 w-5" />
             </Button>
-          </Link>
+          </div>
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
