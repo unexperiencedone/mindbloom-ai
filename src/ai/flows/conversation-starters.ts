@@ -7,8 +7,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import type { GenerateConversationStartersInput, GenerateConversationStartersOutput } from '@/ai/schemas/conversation-starters';
-import { GenerateConversationStartersInputSchema, GenerateConversationStartersOutputSchema } from '@/ai/schemas/conversation-starters';
+import { GenerateConversationStartersInputSchema, GenerateConversationStartersOutputSchema, type GenerateConversationStartersInput, type GenerateConversationStartersOutput } from '@/ai/schemas/conversation-starters';
 
 
 export async function generateConversationStarters(

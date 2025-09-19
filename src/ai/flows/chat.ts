@@ -1,8 +1,7 @@
 'use server';
 
 import { ai } from '@/ai/genkit';
-import type { ChatInput, ChatOutput } from '@/ai/schemas/chat';
-import { ChatInputSchema, ChatOutputSchema } from '@/ai/schemas/chat';
+import { ChatInputSchema, ChatOutputSchema, type ChatInput, type ChatOutput } from '@/ai/schemas/chat';
 
 export async function chat(input: ChatInput): Promise<ChatOutput> {
   return chatFlow(input);
@@ -30,6 +29,6 @@ Never give medical advice.`,
       prompt: prompt,
     });
 
-    return { response: result.text() };
+    return { response: result.text };
   }
 );

@@ -7,8 +7,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import type { DetectCrisisKeywordsInput, DetectCrisisKeywordsOutput } from '@/ai/schemas/detect-crisis-keywords';
-import { DetectCrisisKeywordsInputSchema, DetectCrisisKeywordsOutputSchema } from '@/ai/schemas/detect-crisis-keywords';
+import { DetectCrisisKeywordsInputSchema, DetectCrisisKeywordsOutputSchema, type DetectCrisisKeywordsInput, type DetectCrisisKeywordsOutput } from '@/ai/schemas/detect-crisis-keywords';
 
 
 const crisisKeywords = [

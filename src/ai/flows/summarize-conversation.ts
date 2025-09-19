@@ -7,8 +7,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import type { SummarizeConversationInput, SummarizeConversationOutput } from '@/ai/schemas/summarize-conversation';
-import { SummarizeConversationInputSchema, SummarizeConversationOutputSchema } from '@/ai/schemas/summarize-conversation';
+import { SummarizeConversationInputSchema, SummarizeConversationOutputSchema, type SummarizeConversationInput, type SummarizeConversationOutput } from '@/ai/schemas/summarize-conversation';
 
 
 export async function summarizeConversation(
