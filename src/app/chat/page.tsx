@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { Flower2, Send, User, Settings } from 'lucide-react';
+import { Flower2, Send, User, Settings, BrainCircuit } from 'lucide-react';
 import { CrisisAlert } from '@/components/crisis-alert';
 import { chat } from '@/ai/flows/chat';
 import { detectCrisisKeywords } from '@/ai/flows/detect-crisis-keywords';
@@ -157,8 +157,12 @@ export default function ChatPage() {
   return (
     <>
       <div className="flex flex-col h-screen">
-        <header className="flex items-center justify-between p-4 border-b shadow-sm">
-          <div className="w-10"></div>
+        <header className="flex items-center justify-between p-4 border-b shadow-sm bg-background">
+           <Link href="/activities" passHref>
+            <Button variant="ghost" size="icon" aria-label="Activities">
+              <BrainCircuit className="h-5 w-5" />
+            </Button>
+          </Link>
           <h1 className="text-2xl font-bold tracking-tight font-headline text-center">
             MindBloom AI 🌸
           </h1>

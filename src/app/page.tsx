@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Form, FormField, FormItem, FormMessage, FormControl } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { Flower2, MessageSquareHeart } from 'lucide-react';
 
@@ -47,15 +47,23 @@ function AuthForm() {
 
   const onLogin = async (data: LoginForm) => {
     setIsLoading(true);
-    // In a real app, you would call your auth API here.
-    // We'll simulate a successful login for the prototype.
+    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log('Login data:', data);
-    toast({
-      title: 'Login Successful!',
-      description: "Welcome back! We're redirecting you to your chat.",
-    });
-    router.push('/chat');
+    
+    if (data.email === 'user@example.com' && data.password === 'password123') {
+      toast({
+        title: 'Login Successful!',
+        description: "Welcome back! We're redirecting you to your chat.",
+      });
+      router.push('/chat');
+    } else {
+       toast({
+        variant: 'destructive',
+        title: 'Login Failed',
+        description: "Invalid email or password. Please try again.",
+      });
+    }
+
     setIsLoading(false);
   };
 
@@ -67,7 +75,7 @@ function AuthForm() {
     console.log('Signup data:', data);
     toast({
       title: 'Signup Successful!',
-      description: "Welcome to MindBloom! We're setting things up for you.",
+      description: "Welcome to MindBloom! We're redirecting you.",
     });
     router.push('/chat');
     setIsLoading(false);
@@ -93,7 +101,9 @@ function AuthForm() {
                   render={({ field }) => (
                     <FormItem>
                       <Label>Email</Label>
-                      <Input placeholder="you@example.com" {...field} disabled={isLoading} />
+                      <FormControl>
+                        <Input placeholder="user@example.com" {...field} disabled={isLoading} />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -104,7 +114,9 @@ function AuthForm() {
                   render={({ field }) => (
                     <FormItem>
                       <Label>Password</Label>
-                      <Input type="password" {...field} disabled={isLoading} />
+                      <FormControl>
+                        <Input type="password" placeholder="password123" {...field} disabled={isLoading} />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -131,7 +143,9 @@ function AuthForm() {
                   render={({ field }) => (
                     <FormItem>
                       <Label>Name</Label>
-                      <Input placeholder="What should we call you?" {...field} disabled={isLoading} />
+                       <FormControl>
+                        <Input placeholder="What should we call you?" {...field} disabled={isLoading} />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -142,7 +156,9 @@ function AuthForm() {
                   render={({ field }) => (
                     <FormItem>
                       <Label>Email</Label>
-                      <Input placeholder="you@example.com" {...field} disabled={isLoading} />
+                       <FormControl>
+                        <Input placeholder="you@example.com" {...field} disabled={isLoading} />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -153,7 +169,9 @@ function AuthForm() {
                   render={({ field }) => (
                     <FormItem>
                       <Label>Password</Label>
-                      <Input type="password" {...field} disabled={isLoading} />
+                      <FormControl>
+                        <Input type="password" {...field} disabled={isLoading} />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -173,33 +191,10 @@ function AuthForm() {
 
 export default function LandingPage() {
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen w-full bg-background overflow-hidden">
-        <motion.div
-            initial={{ opacity: 0, y: -100, scale: 0.8 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="z-10 text-center px-4"
-        >
-            <div className="flex justify-center items-center gap-4 mb-4">
-                <Flower2 className="h-12 w-12 text-primary" />
-                <h1 className="text-5xl md:text-6xl font-bold tracking-tight font-headline">
-                    MindBloom AI
-                </h1>
-            </div>
-            <p className="max-w-xl mx-auto text-lg text-muted-foreground mb-8">
-                Your safe space for reflection and growth. An empathetic AI companion, here to listen without judgment.
-            </p>
-        </motion.div>
-
-        <motion.div
-            initial={{ opacity: 0, y: 100 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
-            className="z-10 w-full px-4"
-        >
-            <AuthForm />
-        </motion.div>
+    <div className="relative flex flex-col items-center justify-center min-h-screen w-full bg-background overflow-hidden p-4">
         
+        <div className="absolute inset-0 bg-background/50 backdrop-blur-sm z-0"></div>
+
         {/* Background animations */}
         <motion.div
             className="absolute top-10 left-10 text-secondary"
@@ -222,9 +217,34 @@ export default function LandingPage() {
         >
             <MessageSquareHeart size={40} strokeWidth={1.5} />
         </motion.div>
+        
+        <main className="z-10 flex flex-col items-center justify-center w-full">
+            <motion.div
+                initial={{ opacity: 0, y: -100, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+                className="text-center"
+            >
+                <div className="flex justify-center items-center gap-4 mb-4">
+                    <Flower2 className="h-12 w-12 text-primary" />
+                    <h1 className="text-5xl md:text-6xl font-bold tracking-tight font-headline">
+                        MindBloom AI
+                    </h1>
+                </div>
+                <p className="max-w-xl mx-auto text-lg text-muted-foreground mb-8">
+                    Your safe space for reflection and growth. An empathetic AI companion, here to listen without judgment.
+                </p>
+            </motion.div>
 
-        <div className="absolute inset-0 bg-background/50 backdrop-blur-sm z-0"></div>
-
+            <motion.div
+                initial={{ opacity: 0, y: 100 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
+                className="w-full"
+            >
+                <AuthForm />
+            </motion.div>
+        </main>
     </div>
   );
 }
