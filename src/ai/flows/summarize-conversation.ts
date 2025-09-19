@@ -22,7 +22,8 @@ const prompt = ai.definePrompt({
   output: {schema: SummarizeConversationOutputSchema},
   prompt: `You are an expert summarizer. Please provide a concise summary of the following conversation:
 
-Conversation: {{{conversation}}}
+Conversation:
+{{{conversation}}}
 
 Summary: `,
 });
