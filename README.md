@@ -6,10 +6,12 @@ MindBloom AI is an empathetic AI companion for mental wellness, built with Next.
 
 - **Empathetic AI Chat:** Have natural and supportive conversations with Bloom, an AI fine-tuned for empathy and encouragement.
 - **Persistent Chat History:** Conversations are securely stored in Firestore, so you can pick up right where you left off.
+- **User Authentication:** A simple and secure authentication system allows users to sign up and log in to their personal accounts.
+- **Customizable Themes:** Switch between light, dark, and system themes to personalize your experience.
 - **Refreshing Activities:** Access a suite of tools to help you relax and reflect, including:
     - Guided Breathing Exercises
     - A Mood Journal to record your thoughts
-    - An AI-powered tool to summarize your chat history for reflection.
+    - A history log of your past conversations for reflection.
 - **AI-Powered Crisis Detection:** The chat system intelligently detects keywords related to self-harm and immediately provides resources for help.
 - **Proactive Safety Net:** Optionally configure the app to notify trusted contacts if you've been inactive for a specified period.
 
@@ -19,7 +21,7 @@ MindBloom AI is an empathetic AI companion for mental wellness, built with Next.
 - **AI:** Google's Gemini models via [Genkit](https://firebase.google.com/docs/genkit)
 - **Database & Backend:** [Firebase](https://firebase.google.com/) (Firestore for data storage)
 - **UI:** [ShadCN UI](https://ui.shadcn.com/) & [Tailwind CSS](https://tailwindcss.com/)
-- **Styling:** CSS-in-JS with Tailwind CSS
+- **Theme Management:** [next-themes](https://github.com/pacocoursey/next-themes)
 - **Schema Validation:** [Zod](https://zod.dev/)
 
 ## 🚀 Getting Started
