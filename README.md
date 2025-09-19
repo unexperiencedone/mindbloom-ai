@@ -61,3 +61,8 @@ This is a Next.js project bootstrapped with `create-next-app`.
 Open [http://localhost:9002](http://localhost:9002) with your browser to see the result.
 
 You can start editing the main page by modifying `src/app/page.tsx`. The page auto-updates as you edit the file.
+
+You can also visit my app which is been deployed over vercel for now.
+I am facing issues with the database so no featue involving that works.
+Click Here to visit 
+https://mindbloom-ai-three.vercel.app/
